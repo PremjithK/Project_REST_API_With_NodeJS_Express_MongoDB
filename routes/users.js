@@ -1,17 +1,18 @@
 const express = require('express')
 const router = express.Router()
-const User = require('../models/UserModel')
+const UserModel = require('../models/UserModel')
 
-
-//? ':id' is a placeholder for any variables passed via http methods (GET,POST,PUT,DELETE,PATCH...) from client side
-
+/*
+? ':id' is a placeholder for any variables passed via http methods through the URL
+? (GET,POST,PUT,DELETE,PATCH...) from client side 
+*/
 
 // Route for getting all users
 router.get('/', async (req,res)=>{
 
     //res.send('Getting all users')
     try {
-        const allUsers = await User.find()
+        const allUsers = await UserModel.find()
         res.json(allUsers)
     } catch (error) {
         res.status(500).json({
@@ -21,8 +22,6 @@ router.get('/', async (req,res)=>{
 
 })
 
-
-
 // Route for getting one user
 router.get('/:id',getUser, (req,res)=>{
     // res.send('Getting one User')
@@ -30,13 +29,14 @@ router.get('/:id',getUser, (req,res)=>{
     res.json(res.user)
 })
 
-
-
 // Route for creating one user
 router.post('/', async(req,res)=>{
     // res.send('Creating one user')
-    const user = new User({
+    const user = new UserModel({
         name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        address:req.body.address,
         type: req.body.type,
     })
 
@@ -48,19 +48,27 @@ router.post('/', async(req,res)=>{
     }
 })
 
-
-
 // Route for updating one user's details
 router.patch('/:id', getUser, async(req,res)=>{
-    // res.send('Updating one user')
+    
+    // Validating each field in the incoming update request
     if(req.params.id!=null){
         res.user.name = req.body.name
+    }
+    if(req.body.email!=null){
+        res.user.email = req.body.email
+    }
+    if(req.body.phone!=null){
+        res.user.phone = req.body.phone
+    }
+    if(req.body.address!=null){
+        res.user.address = req.body.address
     }
     if(req.body.type!=null){
         res.user.type = req.body.type
     }
     try {
-        const updatedUser = await res.user.save()
+        const updatedUser = await UserModel.findByIdAndUpdate(req.params.id,req.body, {new:true})
         res.json(updatedUser)
     } catch (error) {
         res.status(400).json({message:error.message})
@@ -77,17 +85,13 @@ router.delete('/:id',getUser, async(req,res)=>{
     } catch (error) {
         res.status(500).send({message:error.message})
     }
-
-
 })
 
-
-
-
-//? Setting middleware for each
+// Setting middleware for fetching one user
+// The getUser() function is used many times in other routes 
 async function getUser(req,res,next){
     try {
-        foundUser = await User.findById(req.params.id)
+        foundUser = await UserModel.findById(req.params.id)
         if(foundUser==null) return res.status(404).send({message:'User does not exist'})
     } catch (error) {
         return res.status(500).send({message:error.message})
@@ -96,6 +100,5 @@ async function getUser(req,res,next){
     next()
 }
 
-
-//? Exporting this module as a router
+// Exporting this module as a router
 module.exports = router

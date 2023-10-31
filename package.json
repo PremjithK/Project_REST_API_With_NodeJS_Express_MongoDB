@@ -1,13 +1,14 @@
 {
-  "name": "node_clothing_api",
+  "name": "styler_api_node_js",
   "version": "1.0.0",
-  "description": "First node js exrpess server backend project",
+  "description": "Backend for Styler E-Commerce",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
+    "devstart":"nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "prem",
+  "author": "PremjithK",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.3.1",

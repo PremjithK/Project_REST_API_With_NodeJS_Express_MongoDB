@@ -1,8 +1,21 @@
 const mongoose = require('mongoose')
 
+// Creating a mongoDB Schema for Users
 const UserSchema = new mongoose.Schema({
 
     name: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+    },
+    phone: {
+        type: Number,
+        required: true,
+    },
+    address: {
         type: String,
         required: true,
     },
@@ -10,9 +23,9 @@ const UserSchema = new mongoose.Schema({
     type: {
         type: String,
         required: true,
-        default: 'customer',
+        default: 'user',
     },
 
 })
 
-module.exports = mongoose.model('user', UserSchema)
+module.exports = mongoose.model('users', UserSchema)
